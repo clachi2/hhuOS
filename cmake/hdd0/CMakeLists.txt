@@ -32,6 +32,7 @@ add_custom_command(OUTPUT "${HHUOS_ROOT_DIR}/hdd0.img"
         COMMAND /bin/cp "$<TARGET_FILE:beep>" "bin/beep"
         COMMAND /bin/cp "$<TARGET_FILE:bug>" "bin/bug"
         COMMAND /bin/cp "$<TARGET_FILE:cat>" "bin/cat"
+		COMMAND /bin/cp "$<TARGET_FILE:clownmdemu>" "bin/clownmdemu"
         COMMAND /bin/cp "$<TARGET_FILE:cp>" "bin/cp"
 		COMMAND /bin/cp "$<TARGET_FILE:ctest>" "bin/ctest"
         COMMAND /bin/cp "$<TARGET_FILE:date>" "bin/date"
@@ -49,9 +50,9 @@ add_custom_command(OUTPUT "${HHUOS_ROOT_DIR}/hdd0.img"
         COMMAND /bin/cp "$<TARGET_FILE:mkdir>" "bin/mkdir"
         COMMAND /bin/cp "$<TARGET_FILE:mount>" "bin/mount"
 		COMMAND /bin/cp "$<TARGET_FILE:nettest>" "bin/nettest"
-		COMMAND /bin/cp "$<TARGET_FILE:opengl>" "bin/opengl"
 		COMMAND /bin/cp "$<TARGET_FILE:peanut-gb>" "bin/peanut-gb"
         COMMAND /bin/cp "$<TARGET_FILE:ping>" "bin/ping"
+		COMMAND /bin/cp "$<TARGET_FILE:portablegl>" "bin/portablegl"
         COMMAND /bin/cp "$<TARGET_FILE:play>" "bin/play"
         COMMAND /bin/cp "$<TARGET_FILE:ps>" "bin/ps"
         COMMAND /bin/cp "$<TARGET_FILE:pwd>" "bin/pwd"
@@ -60,6 +61,7 @@ add_custom_command(OUTPUT "${HHUOS_ROOT_DIR}/hdd0.img"
         COMMAND /bin/cp "$<TARGET_FILE:rmdir>" "bin/rmdir"
         COMMAND /bin/cp "$<TARGET_FILE:shutdown>" "bin/shutdown"
         COMMAND /bin/cp "$<TARGET_FILE:smbios>" "bin/smbios"
+		COMMAND /bin/cp "$<TARGET_FILE:tinygl>" "bin/tinygl"
         COMMAND /bin/cp "$<TARGET_FILE:touch>" "bin/touch"
         COMMAND /bin/cp "$<TARGET_FILE:tree>" "bin/tree"
         COMMAND /bin/cp "$<TARGET_FILE:uecho>" "bin/uecho"
@@ -72,6 +74,7 @@ add_custom_command(OUTPUT "${HHUOS_ROOT_DIR}/hdd0.img"
         COMMAND /bin/cp -r "${CMAKE_BINARY_DIR}/books" "user"
 		COMMAND /bin/cp -r "${CMAKE_BINARY_DIR}/doom" "user"
 		COMMAND /bin/cp -r "${CMAKE_BINARY_DIR}/gameboy" "user"
+		COMMAND /bin/cp -r "${CMAKE_BINARY_DIR}/megadrive" "user"
 		COMMAND /bin/cp -r "${CMAKE_BINARY_DIR}/quake" "user"
         COMMAND /bin/cp -r "${CMAKE_BINARY_DIR}/wav" "user"
 		COMMAND /bin/rm -f "${CMAKE_BINARY_DIR}/part.img"
@@ -81,6 +84,10 @@ add_custom_command(OUTPUT "${HHUOS_ROOT_DIR}/hdd0.img"
         COMMAND /bin/cat "${CMAKE_BINARY_DIR}/fill.img" "${CMAKE_BINARY_DIR}/part.img" "${CMAKE_BINARY_DIR}/fill.img" > "${HHUOS_ROOT_DIR}/hdd0.img"
         COMMAND /bin/rm "${CMAKE_BINARY_DIR}/part.img" "${CMAKE_BINARY_DIR}/fill.img"
         COMMAND /bin/echo -e "'o\\nn\\np\\n1\\n2048\\n$<IF:$<CONFIG:Debug>,524287,131071>\\nt\\ne\\nw\\n'" | fdisk "${HHUOS_ROOT_DIR}/hdd0.img"
-        DEPENDS asciimation-star-wars books-gutenberg doom-wad gameboy-roms music quake-pak shell asciimate battlespace beep bug cat cp ctest date demo dino doom echo head hexdump ip keyboard kill ls membench mkdir mount nettest opengl peanut-gb ping play ps pwd quake rm rmdir shutdown smbios touch tree uecho unmount uptime view3d doom-wad pic)
+        DEPENDS asciimation-star-wars beep-files books-gutenberg doom-wad gameboy-roms megadrive-roms quake-pak wav-files
+				shell asciimate battlespace beep bug cat clownmdemu cp ctest date demo dino doom echo head hexdump ip keyboard kill ls membench mkdir mount nettest peanut-gb ping play portablegl ps pwd quake rm rmdir shutdown smbios  tinygl touch tree uecho unmount uptime view3d pic)
 
-add_custom_target(${PROJECT_NAME} DEPENDS asciimation-star-wars books-gutenberg doom-wad gameboy-roms music quake-pak shell asciimate battlespace beep bug cat cp ctest date demo dino doom echo head hexdump ip keyboard kill ls membench mkdir mount nettest opengl peanut-gb ping play ps pwd quake rm rmdir shutdown smbios touch tree uecho unmount uptime view3d pic "${HHUOS_ROOT_DIR}/hdd0.img")
+add_custom_target(${PROJECT_NAME}
+		DEPENDS asciimation-star-wars beep-files books-gutenberg doom-wad gameboy-roms megadrive-roms quake-pak wav-files
+				shell asciimate battlespace beep bug cat clownmdemu cp ctest date demo dino doom echo head hexdump ip keyboard kill ls membench mkdir mount nettest peanut-gb ping play portablegl ps pwd quake rm rmdir shutdown smbios tinygl touch tree uecho unmount uptime view3d pic
+		"${HHUOS_ROOT_DIR}/hdd0.img")

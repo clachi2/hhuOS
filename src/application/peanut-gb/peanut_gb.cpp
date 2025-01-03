@@ -16,6 +16,7 @@
  */
 
 #include "Peanut-GB/peanut_gb.h"
+
 #include "lib/util/base/Exception.h"
 #include "stdio.h"
 #include "lib/util/base/Address.h"
@@ -31,11 +32,17 @@
 #include "lib/util/async/Thread.h"
 #include "lib/util/io/key/KeyDecoder.h"
 #include "lib/util/io/key/layout/DeLayout.h"
-#include "lib/util/graphic/BufferedLinearFrameBuffer.h"
 #include "lib/util/graphic/StringDrawer.h"
 #include "lib/util/graphic/font/Terminal8x8.h"
 #include "lib/util/io/stream/FileOutputStream.h"
-#include "lib/util/time/Date.h"
+#include "lib/util/base/String.h"
+#include "lib/util/collection/Array.h"
+#include "lib/util/graphic/Color.h"
+#include "lib/util/io/key/Key.h"
+#include "lib/util/io/stream/InputStream.h"
+#include "lib/util/io/stream/PrintStream.h"
+#include "stdlib.h"
+#include "time.h"
 
 const constexpr uint32_t TARGET_FRAME_RATE = 60;
 const auto targetFrameTime = Util::Time::Timestamp::ofMicroseconds(static_cast<uint64_t>(1000000.0 / TARGET_FRAME_RATE));
@@ -625,9 +632,9 @@ void read_ram_from_file(gb_s *gb) {
 int32_t main(int32_t argc, char *argv[]) {
     auto argumentParser = Util::ArgumentParser();
     argumentParser.setHelpText("GameBoy emulator by 'deltabeard' (https://github.com/deltabeard/Peanut-GB).\n"
-                               "Arrow keys are mapped to WASD, A and B are mapped to K and J, Start is mapped to Space, Select is mapped to Enter.\n"
+                               "Joypad is mapped to WASD; A and B are mapped to K and J; Start is mapped to Space and Select is mapped to Enter.\n"
                                "Use 'F1' and 'F2' to adjust screen scaling. Use 'F3' to cycle through color palettes and 'F4' to reset to default palette.\n"
-                               "Usage: peanut-gb [FILE]...\n"
+                               "Usage: peanut-gb [FILE]\n"
                                "Options:\n"
                                "  -s, --save: Path to save file\n"
                                "  -r, --resolution: Set display resolution\n"

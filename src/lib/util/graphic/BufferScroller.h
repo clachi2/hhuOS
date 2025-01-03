@@ -25,8 +25,6 @@ namespace Graphic {
 class LinearFrameBuffer;
 }  // namespace Graphic
 
-template <typename T> class Address;
-
 }  // namespace Util
 
 namespace Util::Graphic {
@@ -39,7 +37,7 @@ public:
      *
      * @param lfb The linear frame buffer on which to draw pixels.
      */
-    explicit BufferScroller(const LinearFrameBuffer &lfb, bool enableAcceleration = true);
+    explicit BufferScroller(const LinearFrameBuffer &lfb);
 
     /**
      * Copy Constructor.
@@ -54,7 +52,7 @@ public:
     /**
      * Destructor.
      */
-    ~BufferScroller();
+    ~BufferScroller() = default;
 
     /**
      * Scroll the buffer upwards by a given amount of pixel lines.
@@ -67,7 +65,6 @@ private:
 
     bool useMmx = false;
     const LinearFrameBuffer &lfb;
-    const Address<uint32_t> &targetBuffer;
 };
 
 }

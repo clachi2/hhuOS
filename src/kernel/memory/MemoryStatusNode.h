@@ -31,7 +31,7 @@ public:
     /**
      * Constructor.
      */
-    explicit MemoryStatusNode(const Util::String &name);
+    explicit MemoryStatusNode(const Util::String &name = "memory");
 
     /**
      * Copy Constructor.

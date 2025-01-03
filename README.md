@@ -41,8 +41,6 @@ The OS will boot into a shell with some UNIX-like commands. Run `ls /bin` to see
 
 If QEMU hangs on a black screen, try executing `./run.sh --bios true --file hhuOS-limine.iso`. There seems to be a problem with older QEMU versions and new OVMF images.
 
-
-
 ## Build from source
 
 GCC (compatible with C++20), CMake (>=3.14) and some other dependencies are required to compile hhuOS. To install them, you can run the following command (on Ubuntu 22.04):
@@ -55,8 +53,7 @@ Afterward, clone this repository and execute the included build-script:
 
 ```shell
 git clone https://github.com/hhuOS/hhuOS.git
-git submodule init
-git submodule update
+git submodule update --init --recursive
 cd hhuOS
 ./build.sh
 ```
@@ -66,6 +63,13 @@ To test hhuOS in QEMU, simply execute the included run-script:
 ```shell
 ./run.sh
 ```
+
+If QEMU hangs on a black screen, try building an image with [Limine](https://github.com/limine-bootloader/limine) bootloader and then running QEMU with a classic BIOS:
+```
+./build.sh --target limine
+./run.sh --bios true --file hhuOS-limine.iso
+```
+There seems to be a problem with older QEMU versions and new OVMF images.
 
 ## What next?
 
@@ -77,12 +81,29 @@ When you are done tinkering with the OS, why not try to build your own applicati
 
 <table style="margin-left: auto; margin-right: auto">
     <tr>
-        <td><img src="media/screenshots/shell.png" width="450px"></td>
-        <td><img src="media/screenshots/network.png" width="450px"></td>
+        <td>
+        <img src="media/screenshots/shell.png" width="450px"></br>
+        <p align="center">Demonstration of some shell commands in hhuOS</p>
+        </td>
+        <td><img src="media/screenshots/network.png" width="450px"></br>
+        <p align="center">Network stack demo</p>
+        </td>
     </tr>
     <tr>
-        <td><img src="media/screenshots/bug.png" width="450px"></td>
-        <td><img src="media/screenshots/battlespace.png" width="450px"></td>
+        <td><img src="media/screenshots/bug.png" width="450px"></br>
+        <p align="center"><i>Bug Defender</i> is a Space Invaders clone</p>
+        </td>
+        <td><img src="media/screenshots/battlespace.png" width="450px"></br>
+        <p align="center"><i>Battlespace</i> is a 3D space shooter</p>
+        </td>
+    </tr>
+    <tr>
+        <td><img src="media/screenshots/gears.png" width="450px"></br>
+        <p align="center">The classic <i>gears</i> demo using <a href="https://github.com/C-Chads/tinygl">TinyGL</a></p>
+        </td>
+        <td><img src="media/screenshots/cubes.png" width="450px"></br>
+        <p align="center">Rotating textured cubes using <a href="https://github.com/C-Chads/tinygl">TinyGL</a></p>
+        </td>
     </tr>
 </table>
 
@@ -124,12 +145,23 @@ Quake has been ported to hhuOS using [quakegeneric](https://github.com/erysdren/
 - Prebuilt versions of hhuOS on [GitHub Releases](https://github.com/hhuOS/hhuOS/releases) do not include a PAK file. If you want to play Quake, build hhuOS from source. The shareware PAK file will be downloaded automatically.
 
 [TinyGL](https://github.com/C-Chads/tinygl) by [*C-Chads*](https://github.com/C-Chads/) ([License](https://github.com/C-Chads/tinygl/blob/main/LICENSE))
-- Try out the `opengl` command in hhuOS for some demos.
+- Try out the `tinygl` command in hhuOS for some demos.
 
-[Peanut-GB](https://github.com/deltabeard/Peanut-GB) by [*deltabeard*](https://github.com/deltabeard):
+[PortableGL](https://github.com/rswinkle/PortableGL) by [*rswinkle*](https://github.com/rswinkle/) ([MIT](https://github.com/rswinkle/PortableGL/blob/master/LICENSE))
+- Try out the `portablegl` command in hhuOS for some demos.
+
+[Peanut-GB](https://github.com/deltabeard/Peanut-GB) by [*deltabeard*](https://github.com/deltabeard) ([MIT](https://github.com/deltabeard/Peanut-GB/blob/master/peanut_gb.h)):
 - Available as `peanut-gb` command in hhuOS.
-- Arrow keys are mapped to WASD, A and B are mapped to K and J, Start is mapped to Space, Select is mapped to Enter. Use 'F1' and 'F2' to adjust screen scaling. Use 'F3' to cycle through color palettes and 'F4' to reset to default palette.
+- Joypad is mapped to WASD; A and B are mapped to K and J; Start is mapped to Space and Select is mapped to Enter. Use 'F1' and 'F2' to adjust screen scaling. Use 'F3' to cycle through color palettes and 'F4' to reset to default palette.
 - Place your own ROM files in `disk/hdd0/user/gameboy/` before building hhuOS to include them in the HDD image.
 - The following games are included in `/user/gameboy/`:
   - [2048-gb](https://github.com/Sanqui/2048-gb) by [*Sanqui*](https://github.com/Sanqui) ([zlib](https://github.com/Sanqui/2048-gb/blob/master/LICENSE))
   - [5 Mazes](https://github.com/godai78/5-Mazes/) by [*godai78*](https://github.com/godai78) ([MIT](https://github.com/godai78/5-Mazes/blob/main/LICENSE))
+
+[clownmdemu](https://github.com/Clownacy/clownmdemu) by [*Clownacy*](https://github.com/Clownacy) ([GNU AGPLv3](https://github.com/Clownacy/clownmdemu/blob/master/LICENCE.txt)):
+- Available as `clownmdemu` command in hhuOS.
+- Joypad is mapped to arrow keys; ABC and XYZ buttons are mapped to A, S, D and Y(Z), X, C respectively; Start is mapped to Space and Mode is mapped to Enter. Use 'F1' and 'F2' to adjust screen scaling. Use 'F3' to cycle through color palettes and 'F4' to reset to default palette.
+- Place your own ROM files in `disk/hdd0/user/megadrive/` before building hhuOS to include them in the HDD image.
+- The following games are included in `/user/megadrive/`:
+  - [Dragon's Castle](https://github.com/sikthehedgehog/dragon) by [*sikthehedgehog*](https://github.com/sikthehedgehog/) ([zlib](https://github.com/sikthehedgehog/dragon/blob/master/LICENSE))
+  - [Miniplanets](https://github.com/sikthehedgehog/miniplanets) by [*sikthehedgehog*](https://github.com/sikthehedgehog/) ([zlib](https://github.com/sikthehedgehog/miniplanets/blob/master/LICENSE.txt))

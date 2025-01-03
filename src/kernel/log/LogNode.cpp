@@ -15,4 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "Matrix3x3.h"
+#include "Log.h"
+#include "LogNode.h"
+
+namespace Kernel {
+
+LogNode::LogNode(const Util::String &name) : StringNode(name) {}
+
+Util::String LogNode::getString() {
+    return Log::getLog();
+}
+
+}

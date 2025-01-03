@@ -29,6 +29,10 @@
 #include "lib/util/time/Timestamp.h"
 
 namespace Util {
+namespace Graphic {
+class Font;
+}  // namespace Graphic
+
 namespace Math {
 class Vector2D;
 }  // namespace Math
@@ -134,6 +138,8 @@ private:
     Util::Game::D2::SpriteAnimation crackAnimation;
     Util::Game::D2::SpriteAnimation hatchAnimation;
     Util::Game::D2::SpriteAnimation deathAnimation;
+
+    const Util::Graphic::Font &pointsFont;
 
     GrassEmitter *grassEmitter = new GrassEmitter(*this);
     Util::Time::Timestamp lastEmissionTime;

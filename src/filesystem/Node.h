@@ -32,7 +32,6 @@ namespace Filesystem {
 class Node {
 
 public:
-
     /**
      * Constructor.
      */
@@ -126,7 +125,7 @@ public:
      *
      * @return true, on success
      */
-    virtual bool control(uint32_t request, const Util::Array<uint32_t> &parameters) {
+    virtual bool control([[maybe_unused]] uint32_t request, [[maybe_unused]] const Util::Array<uint32_t> &parameters) {
         return false;
     }
 };

@@ -22,12 +22,6 @@
 
 #include "LinearFrameBuffer.h"
 
-namespace Util {
-
-template <typename T> class Address;
-
-}  // namespace Util
-
 namespace Util::Graphic {
 
 class BufferedLinearFrameBuffer : public LinearFrameBuffer {
@@ -38,7 +32,19 @@ public:
      *
      * @param lfb The linear frame buffer, that shall be double buffered.
      */
-    explicit BufferedLinearFrameBuffer(const LinearFrameBuffer &lfb, bool enableAcceleration = true);
+    explicit BufferedLinearFrameBuffer(const LinearFrameBuffer &lfb);
+
+    /**
+     * Constructor using a different resolution (must be smaller) than the target lfb.
+     * The picture will be centered and scaled to the target resolution.
+     */
+    BufferedLinearFrameBuffer(const LinearFrameBuffer &lfb, uint16_t resolutionX, uint16_t resolutionY);
+
+    /**
+     * Constructor using a scaled down resolution.
+     * The picture will be centered and scaled to the target resolution.
+     */
+    BufferedLinearFrameBuffer(const LinearFrameBuffer &lfb, double scaleFactor);
 
     /**
      * Assignment operator.
@@ -53,16 +59,28 @@ public:
     /**
      * Destructor.
      */
-    ~BufferedLinearFrameBuffer() override;
+    ~BufferedLinearFrameBuffer() override = default;
 
     void flush() const;
 
-
-
 private:
 
-    bool useMmx = false;
-    const Address<uint32_t> &targetBuffer;
+    /**
+     * Private constructor with all possible parameters to avoid duplicate code.
+     */
+    BufferedLinearFrameBuffer(const LinearFrameBuffer &lfb, uint16_t resolutionX, uint16_t resolutionY, uint16_t pitch);
+
+    void scalingFlush32() const;
+
+    void scalingFlush24() const;
+
+    void scalingFlush16() const;
+
+    const uint8_t scale;
+    const uint16_t offsetX;
+    const uint16_t offsetY;
+
+    const LinearFrameBuffer &target;
 };
 
 }

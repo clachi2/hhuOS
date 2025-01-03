@@ -90,7 +90,10 @@ void PrintStream::setAlwaysPrintDecimalPoint(bool val) {
 
 void PrintStream::print(const char *string, uint32_t maxBytes) {
 	uint32_t len = Address<uint32_t>(string).stringLength();
-	if (maxBytes >= 0 && len > maxBytes) len = maxBytes;
+	if (len > maxBytes) {
+        len = maxBytes;
+    }
+
     write(reinterpret_cast<const uint8_t*>(string), 0, len);
 }
 
@@ -137,14 +140,11 @@ void PrintStream::print(uint64_t number, char sign) {
         number %= div;
     }
 
-	
 	int32_t fullNumberLength = numberStream.getLength();
 	if (fullNumberLength < minimumIntegerPrecision) fullNumberLength = minimumIntegerPrecision;
 	fullNumberLength += integerPrefix.length();
 	if (sign) fullNumberLength++;
-	
-	
-	
+
 	if (!rightPadding) {
 		for (uint32_t i = fullNumberLength; i < numberPadding; i++) {
 			write(' ');

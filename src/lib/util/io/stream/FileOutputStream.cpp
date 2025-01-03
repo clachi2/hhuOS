@@ -15,42 +15,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "lib/interface.h"
 #include "FileOutputStream.h"
 #include "lib/util/base/Exception.h"
 #include "lib/util/io/file/File.h"
+#include "lib/util/io/stream/FileStream.h"
 
 namespace Util::Io {
 
-FileOutputStream::FileOutputStream(const Io::File &file) : fileDescriptor(Io::File::open(file.getCanonicalPath())) {
-    if (fileDescriptor < 0) {
+FileOutputStream::FileOutputStream(const Io::File &file) : fileStream(static_cast<const char*>(file.getCanonicalPath()), FileStream::FileMode::WRITE) {
+    if (fileStream.isError()) {
         Util::Exception::throwException(Exception::ILLEGAL_STATE, "FileOutputStream: Unable to open file!");
     }
 }
 
-FileOutputStream::FileOutputStream(const String &path) : fileDescriptor(Io::File::open(path)) {
-    if (fileDescriptor < 0) {
+FileOutputStream::FileOutputStream(const String &path) : fileStream(static_cast<const char*>(path), FileStream::FileMode::WRITE) {
+    if (fileStream.isError()) {
         Util::Exception::throwException(Exception::ILLEGAL_STATE, "FileOutputStream: Unable to open file!");
     }
 }
 
-FileOutputStream::FileOutputStream(int32_t fileDescriptor) : fileDescriptor(fileDescriptor) {
-    if (fileDescriptor < 0) {
+FileOutputStream::FileOutputStream(int32_t fileDescriptor) : fileStream(fileDescriptor, false, true) {
+    if (fileStream.isError()) {
         Util::Exception::throwException(Exception::ILLEGAL_STATE, "FileOutputStream: Unable to open file!");
     }
-}
-
-FileOutputStream::~FileOutputStream() {
-    Io::File::close(fileDescriptor);
 }
 
 void FileOutputStream::write(uint8_t c) {
-    write(&c, 0, 1);
+    fileStream.write(c);
 }
 
 void FileOutputStream::write(const uint8_t *sourceBuffer, uint32_t offset, uint32_t length) {
-    uint32_t count = writeFile(fileDescriptor, sourceBuffer + offset, pos, length);
-    pos += count;
+    fileStream.write(sourceBuffer, offset, length);
 }
 
 }

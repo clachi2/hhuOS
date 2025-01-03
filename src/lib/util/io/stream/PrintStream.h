@@ -19,9 +19,11 @@
 #define HHUOS_PRINTSTREAM_H
 
 #include <stdint.h>
+#include <stdarg.h>
 
 #include "OutputStream.h"
 #include "lib/util/base/String.h"
+#include "lib/util/time/Date.h"
 
 namespace Util::Io {
 
@@ -90,6 +92,10 @@ public:
 	void print(double number);
 
     void print(void *pointer);
+	
+	void print(Util::Time::Date date);
+	
+	void printFormatted(const char* format, Util::Time::Date date);
 
     void println();
 
@@ -116,6 +122,12 @@ public:
     void println(uint8_t number);
 
     void println(void *pointer);
+	
+	void println(Util::Time::Date date);
+	
+	int vprintf(const char* format, va_list args);
+	
+	int printf(const char * format, ...) ;
 
     PrintStream& operator<<(char c);
 
@@ -143,6 +155,8 @@ public:
     PrintStream& operator<<(void *ptr);
 	
 	PrintStream& operator<<(double value);
+	
+	PrintStream& operator<<(Util::Time::Date date);
 
     PrintStream& operator<<(PrintStream& (*f)(PrintStream&));
 

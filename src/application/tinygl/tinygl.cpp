@@ -17,7 +17,6 @@
 
 #include <stdint.h>
 
-#include "opengl.h"
 #include "lib/util/base/Address.h"
 #include "lib/util/base/System.h"
 #include "lib/util/base/ArgumentParser.h"
@@ -29,21 +28,26 @@
 #include "lib/util/base/String.h"
 #include "lib/util/collection/Array.h"
 #include "lib/util/io/stream/PrintStream.h"
+#include "lib/util/graphic/PixelDrawer.h"
+#include "lib/util/graphic/BufferedLinearFrameBuffer.h"
 
 extern void info();
-extern void triangle(void *frameBuffer, const Util::Graphic::LinearFrameBuffer &lfb);
-extern void gears(void *frameBuffer, const Util::Graphic::LinearFrameBuffer &lfb);
+extern void triangle(const Util::Graphic::BufferedLinearFrameBuffer &lfb);
+extern void gears(const Util::Graphic::BufferedLinearFrameBuffer &lfb);
+extern void cubes(const Util::Graphic::BufferedLinearFrameBuffer &lfb);
 
 int32_t main(int32_t argc, char *argv[]) {
     auto argumentParser = Util::ArgumentParser();
-    argumentParser.setHelpText("OpenGL demo application.\n\n"
-                               "Usage: opengl <demo>\n"
-                               "Demos: info, triangle, gears\n"
+    argumentParser.setHelpText("TinyGL demo application.\n\n"
+                               "Usage: tinygl <demo>\n"
+                               "Demos: info, triangle, gears, cubes\n"
                                "Options:\n"
                                "  -r, --resolution: Set display resolution\n"
+                               "  -s, --scale: Set display scale factor (Must be <= 1; The application will be rendered at a lower internal resolution and scaled up/centered to fill the screen)\n"
                                "  -h, --help: Show this help message");
 
     argumentParser.addArgument("resolution", false, "r");
+    argumentParser.addArgument("scale", false, "s");
 
     if (!argumentParser.parse(argc, argv)) {
         Util::System::error << argumentParser.getErrorString() << Util::Io::PrintStream::endl << Util::Io::PrintStream::flush;
@@ -52,11 +56,11 @@ int32_t main(int32_t argc, char *argv[]) {
 
     auto arguments = argumentParser.getUnnamedArguments();
     if (arguments.length() == 0) {
-        Util::System::error << "opengl: No arguments provided! Please specify a demo (info, triangle, gears)." << Util::Io::PrintStream::endl << Util::Io::PrintStream::flush;
+        Util::System::error << "tinygl: No arguments provided! Please specify a demo (info, triangle, gears, cubes)." << Util::Io::PrintStream::endl << Util::Io::PrintStream::flush;
         return -1;
     }
 
-    auto demo = arguments[0];
+    const auto &demo = arguments[0];
     if (demo == "info") {
         info();
         return 0;
@@ -77,22 +81,32 @@ int32_t main(int32_t argc, char *argv[]) {
     }
 
     auto lfb = Util::Graphic::LinearFrameBuffer(lfbFile);
-    auto *glBuffer = ZB_open(lfb.getResolutionX(), lfb.getResolutionY(), ZB_MODE_RGBA, nullptr);
+    if (lfb.getColorDepth() != TGL_FEATURE_RENDER_BITS) {
+        Util::System::error << "tinygl: Color depth not supported (Required: " << TGL_FEATURE_RENDER_BITS << ", Got: " << lfb.getColorDepth() << ")!" << Util::Io::PrintStream::endl << Util::Io::PrintStream::flush;
+        return -1;
+    }
+
+    auto scaleFactor = argumentParser.hasArgument("scale") ? Util::String::parseDouble(argumentParser.getArgument("scale")) : 1.0;
+    auto bufferedLfb = Util::Graphic::BufferedLinearFrameBuffer(lfb, scaleFactor);
+    auto *glBuffer = ZB_open(bufferedLfb.getResolutionX(), bufferedLfb.getResolutionY(), ZB_MODE_RGBA, reinterpret_cast<void*>(bufferedLfb.getBuffer().get()));
     glInit(glBuffer);
 
+    lfb.clear();
+
     if (demo == "triangle") {
-        triangle(glBuffer, lfb);
+        triangle(bufferedLfb);
     } else if (demo == "gears") {
-        gears(glBuffer, lfb);
+        gears(bufferedLfb);
+    } else if (demo == "cubes") {
+        cubes(bufferedLfb);
     } else {
         Util::System::error << "opengl: Invalid demo '" << demo << "'!" << Util::Io::PrintStream::endl << Util::Io::PrintStream::flush;
         return -1;
     }
 
+    ZB_close(glBuffer);
+    glClose();
+
     Util::Graphic::Ansi::cleanupGraphicalApplication();
     return 0;
-}
-
-void flush(void *glBuffer, const Util::Graphic::LinearFrameBuffer &lfb) {
-    ZB_copyFrameBuffer(reinterpret_cast<ZBuffer*>(glBuffer), reinterpret_cast<void*>(lfb.getBuffer().get()), lfb.getPitch());
 }

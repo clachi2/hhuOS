@@ -21,6 +21,8 @@ message(STATUS "Project " ${PROJECT_NAME})
 
 include_directories(${HHUOS_SRC_DIR})
 
+add_compile_options(-Wno-unused-function -Wno-unused-variable -Wno-unused-parameter -Wno-implicit-fallthrough)
+
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} lib.user.base lib.user.time lib.user.math lib.user.runtime)

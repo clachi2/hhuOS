@@ -32,7 +32,6 @@
 #include "Level.h"
 #include "lib/util/base/String.h"
 #include "lib/util/graphic/Font.h"
-#include "lib/util/graphic/font/Terminal8x16.h"
 #include "lib/util/io/file/File.h"
 
 GameOverScreen::GameOverScreen(uint32_t score) : score(score) {}
@@ -41,10 +40,10 @@ void GameOverScreen::initialize() {
     setKeyListener(*this);
 }
 
-void GameOverScreen::update(double delta) {}
+void GameOverScreen::update([[maybe_unused]] double delta) {}
 
 void GameOverScreen::initializeBackground(Util::Game::Graphics &graphics) {
-    auto &font = Util::Graphic::Fonts::TERMINAL_8x16;
+    auto &font = Util::Graphic::Font::getFontForResolution(static_cast<uint32_t>(Util::Game::GameManager::getAbsoluteResolution().getY()));
     auto &resolution = Util::Game::GameManager::getAbsoluteResolution();
     auto lines = sizeof(TEXT) / sizeof(char*);
     auto centerX = resolution.getX() / 2;
@@ -59,7 +58,7 @@ void GameOverScreen::initializeBackground(Util::Game::Graphics &graphics) {
     }
 }
 
-void GameOverScreen::keyPressed(Util::Io::Key key) {
+void GameOverScreen::keyPressed(const Util::Io::Key &key) {
     switch (key.getScancode()) {
         case Util::Io::Key::ESC:
             Util::Game::GameManager::getGame().stop();
@@ -71,4 +70,4 @@ void GameOverScreen::keyPressed(Util::Io::Key key) {
     }
 }
 
-void GameOverScreen::keyReleased(Util::Io::Key key) {}
+void GameOverScreen::keyReleased([[maybe_unused]] const Util::Io::Key &key) {}

@@ -16,18 +16,20 @@
 
 cmake_minimum_required(VERSION 3.14)
 
-project(opengl)
+project(portablegl)
 message(STATUS "Project " ${PROJECT_NAME})
 
 include_directories(${HHUOS_SRC_DIR})
 
+add_compile_options(-Wno-unknown-pragmas -Wno-unused-parameter -Wno-missing-field-initializers)
+
 # Set source files
 set(SOURCE_FILES
-        ${HHUOS_SRC_DIR}/application/opengl/opengl.cpp
-        ${HHUOS_SRC_DIR}/application/opengl/gears.cpp
-        ${HHUOS_SRC_DIR}/application/opengl/info.cpp
-        ${HHUOS_SRC_DIR}/application/opengl/triangle.cpp)
+        ${HHUOS_SRC_DIR}/application/portablegl/portablegl.cpp
+        ${HHUOS_SRC_DIR}/application/portablegl/info.cpp
+        ${HHUOS_SRC_DIR}/application/portablegl/gears.cpp
+        ${HHUOS_SRC_DIR}/application/portablegl/triangle.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} lib.user.runtime lib.user.base lib.user.tinygl)
+target_link_libraries(${PROJECT_NAME} lib.user.runtime lib.user.base)

@@ -21,11 +21,16 @@
 #include <stdint.h>
 
 #include "InputStream.h"
+#include "FileStream.h"
 #include "lib/util/base/String.h"
 #include "lib/util/io/file/File.h"
 
 namespace Util::Io {
 
+/**
+ * A stream that reads data from a file.
+ * It is essentially a wrapper for FileStream, that opens the file in read mode.
+ */
 class FileInputStream : public InputStream {
 
 public:
@@ -40,8 +45,6 @@ public:
 
     FileInputStream &operator=(const FileInputStream &copy) = delete;
 
-    ~FileInputStream() override;
-
     int16_t read() override;
 	
 	int16_t peek() override;
@@ -53,11 +56,7 @@ public:
     bool isReadyToRead() override;
 
 private:
-	
-    uint32_t pos = 0;
-    int32_t fileDescriptor;
-	
-	int16_t peekedChar = -1;
+	FileStream fileStream;
 
 };
 

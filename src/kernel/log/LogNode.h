@@ -15,57 +15,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef HHUOS_SSEADDRESS_H
-#define HHUOS_SSEADDRESS_H
+#ifndef HHUOS_LOGNODE_H
+#define HHUOS_LOGNODE_H
 
-#include <stdint.h>
+#include "filesystem/memory/StringNode.h"
+#include "lib/util/base/String.h"
 
-#include "Address.h"
+namespace Kernel {
 
-namespace Util {
-
-template<typename T>
-class SseAddress : public Address<T> {
+class LogNode : public Filesystem::Memory::StringNode {
 
 public:
     /**
      * Default Constructor.
      */
-    SseAddress() = default;
-
-    explicit SseAddress(T address);
-
-    explicit SseAddress(void *pointer);
-
-    explicit SseAddress(const void *pointer);
-
-    explicit SseAddress(const Address<T> &address);
+    LogNode(const Util::String &name = "log");
 
     /**
      * Copy Constructor.
      */
-    SseAddress(const SseAddress &other) = delete;
+    LogNode(const LogNode &other) = delete;
 
     /**
      * Assignment operator.
      */
-    SseAddress &operator=(const SseAddress &other) = delete;
+    LogNode &operator=(const LogNode &other) = delete;
 
     /**
      * Destructor.
      */
-    ~SseAddress() override = default;
+    ~LogNode() override = default;
 
-    void setRange(uint8_t value, T length) const override;
+protected:
 
-    void copyRange(const Address<T> &sourceAddress, T length) const override;
+    Util::String getString() override;
 };
-
-template
-class SseAddress<uint16_t>;
-
-template
-class SseAddress<uint32_t>;
 
 }
 

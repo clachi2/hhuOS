@@ -79,19 +79,49 @@ ENABLE_LANGUAGE(ASM_NASM)
 set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf32")
 set(CMAKE_ASM_NASM_INCLUDES "${HHUOS_SRC_DIR}/")
 set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> -I${CMAKE_ASM_NASM_INCLUDES} -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
-set(CMAKE_C_FLAGS "-m32 -march=i386 -mfpmath=387 -mno-mmx -mno-sse -mno-avx -Wall -fno-stack-protector -nostdlib -fno-pic -no-pie -ffreestanding")
-if(CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 9)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mmanual-endbr")
-endif()
-set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wl,--build-id=none -Wno-non-virtual-dtor -fno-threadsafe-statics -Wplacement-new=0 -fno-use-cxa-atexit -fno-rtti -fno-exceptions -std=c++20 -T ${HHUOS_SRC_DIR}/link.ld")
 
-# Set preprocessor defines
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}\
-    -DHHUOS_VERSION='${HHUOS_VERSION}'\
-    -DHHUOS_CODENAME='${HHUOS_CODENAME}'\
-    -DHHUOS_GIT_REV='${HHUOS_GIT_REV}'\
-    -DHHUOS_GIT_BRANCH='${HHUOS_GIT_BRANCH}'\
-    -DHHUOS_BUILD_DATE='${HHUOS_BUILD_DATE}'")
+add_compile_options(
+        -m32
+        -march=i386
+        -mfpmath=387
+        -mno-mmx
+        -mno-sse
+        -mno-avx
+        -fno-stack-protector
+        -fno-pic
+        -no-pie
+        -ffreestanding
+        -Wall
+        -Wextra
+        -Werror
+        -DHHUOS_VERSION=${HHUOS_VERSION}
+        -DHHUOS_CODENAME=${HHUOS_CODENAME}
+        -DHHUOS_GIT_REV=${HHUOS_GIT_REV}
+        -DHHUOS_GIT_BRANCH=${HHUOS_GIT_BRANCH}
+        -DHHUOS_BUILD_DATE=${HHUOS_BUILD_DATE}
+        $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
+        $<$<COMPILE_LANGUAGE:CXX>:-fno-threadsafe-statics>
+        $<$<COMPILE_LANGUAGE:CXX>:-fno-use-cxa-atexit>
+        $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
+        $<$<COMPILE_LANGUAGE:CXX>:-std=gnu++20>
+)
+if(CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 9)
+    add_compile_options(-mmanual-endbr)
+endif()
+
+add_link_options(
+        -nostartfiles
+        -nodefaultlibs
+        -nolibc
+        -nostdlib
+        -no-pie
+        -Wl,--build-id=none
+        -Wl,-m,elf_i386
+        -T $<IF:$<STREQUAL:$<TARGET_PROPERTY:NAME>,system>,${HHUOS_SRC_DIR}/link.ld,${HHUOS_SRC_DIR}/application/link.ld>
+)
+if(CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 13)
+    add_compile_options(-nostdlib++)
+endif()
 
 # Add include-what-you-use command (if available)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -100,15 +130,15 @@ find_program(iwyu_tool_path NAMES iwyu_tool.py iwyu-tool)
 find_program(iwyu_fix_includes_path NAMES fix_includes.py iwyu-fix-includes)
 if (Python3_Interpreter_FOUND AND iwyu_tool_path AND iwyu_fix_includes_path)
     ProcessorCount(ncpus)
-    add_custom_target(optimize_includes
+    add_custom_target(optimize-includes
             COMMAND "${Python3_EXECUTABLE}" "${iwyu_tool_path}" -j "${ncpus}" -p "${CMAKE_BINARY_DIR}" |
-                    "${Python3_EXECUTABLE}" "${iwyu_fix_includes_path}" --nocomments --noupdate_comments --blank_lines --nosafe_headers --ignore_re "(.*/ff/source.*)|(.*/tinygl.*)|(.*/libc.*)|(.*/doomgeneric/doomgeneric.*)|(.*/quakegeneric/source.*)|(.*/Peanut-GB.*)" -p "${HHUOS_SRC_DIR}"
+                    "${Python3_EXECUTABLE}" "${iwyu_fix_includes_path}" --nocomments --noupdate_comments --blank_lines --nosafe_headers --ignore_re "(.*/ff/source.*)|(.*/tinygl.*)|(.*/portablegl.*)|(.*/libc.*)|(.*/doomgeneric/doomgeneric.*)|(.*/quakegeneric/source.*)|(.*/Peanut-GB.*)" -p "${HHUOS_SRC_DIR}"
             VERBATIM)
 endif()
 
 find_program(cloc_path NAMES cloc)
 if (cloc_path)
-    add_custom_target(cloc COMMAND "${cloc_path}" "${HHUOS_SRC_DIR}" --exclude-dir=ff,tinygl,doomgeneric,quakegeneric,Peanut-GB VERBATIM)
+    add_custom_target(cloc COMMAND "${cloc_path}" "${HHUOS_SRC_DIR}" --exclude-dir=ff,tinygl,portablegl,doomgeneric,quakegeneric,Peanut-GB VERBATIM)
 endif()
 
 
@@ -125,8 +155,6 @@ add_subdirectory(towboot)
 
 add_subdirectory(application)
 
-add_subdirectory(asciimation)
-add_subdirectory(music)
 add_subdirectory(books)
 
 add_subdirectory(hdd0)

@@ -24,8 +24,6 @@
 #ifndef HHUOS_POLYGON_H
 #define HHUOS_POLYGON_H
 
-#include <stdint.h>
-
 #include "lib/util/collection/Array.h"
 #include "lib/util/math/Vector2D.h"
 #include "lib/util/game/Drawable.h"
@@ -44,7 +42,7 @@ public:
     /**
      * Constructor.
      */
-    Polygon(uint32_t tag, const Array<Math::Vector2D> &vertices);
+    explicit Polygon(const Array<Math::Vector2D> &vertices);
 
     /**
      * Copy Constructor.
