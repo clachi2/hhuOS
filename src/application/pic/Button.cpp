@@ -33,7 +33,7 @@ Button::Button(DataWrapper *data) {
     for (int i = 0; i < 30 * 200; i++) {
         this->buffer[i] = 0x00000000;
     }
-    this->lfb = new Util::Graphic::LinearFrameBuffer(this->buffer, 200, 30, 32, 200 * 4, false);
+    this->lfb = new Util::Graphic::LinearFrameBuffer(this->buffer, 200, 30, 32, 200 * 4);
     this->pixelDrawer = new Util::Graphic::PixelDrawer(*lfb);
     this->lineDrawer = new Util::Graphic::LineDrawer(*pixelDrawer);
     this->stringDrawer = new Util::Graphic::StringDrawer(*pixelDrawer);

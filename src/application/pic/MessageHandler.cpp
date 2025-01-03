@@ -37,7 +37,7 @@ MessageHandler::MessageHandler(int width, int height) {
     for (int i = 0; i < width * height; i++) {
         this->buffer[i] = 0;
     }
-    this->lfb = new Util::Graphic::LinearFrameBuffer(buffer, width, height, 32, width * 4, false);
+    this->lfb = new Util::Graphic::LinearFrameBuffer(buffer, width, height, 32, width * 4);
     this->pixelDrawer = new Util::Graphic::PixelDrawer(*lfb);
     this->stringDrawer = new Util::Graphic::StringDrawer(*pixelDrawer);
     this->maxMessages = height / 16;

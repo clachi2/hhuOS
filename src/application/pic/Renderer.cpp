@@ -47,7 +47,7 @@ Renderer::Renderer(DataWrapper *data) {
     this->lastRenderedMouseX = 0;
     this->lastRenderedMouseY = 0;
     this->lfb_overlay = new Util::Graphic::LinearFrameBuffer(this->buff_overlay, data->workAreaX, data->workAreaY,
-                                                             32, data->workAreaX * 4, false);
+                                                             32, data->workAreaX * 4);
     this->pixelDrawer_overlay = new Util::Graphic::PixelDrawer(*lfb_overlay);
     this->lineDrawer_overlay = new Util::Graphic::LineDrawer(*pixelDrawer_overlay);
     this->stringDrawer_overlay = new Util::Graphic::StringDrawer(*pixelDrawer_overlay);
