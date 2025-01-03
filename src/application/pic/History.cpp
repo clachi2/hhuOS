@@ -248,7 +248,12 @@ void History::saveToFile(const Util::String &path) {
     FILE *file = fopen(path.operator const char *(), "w");
     if (file) {
         for (uint32_t i = 0; i < commands->size(); i++) {
-            fputs(commands->get(i).operator const char *(), file);
+            auto command = commands->get(i);
+            auto s = command.operator const char *();
+            print(s);
+            if (command.length() > 1000)
+                print("saving a big Command... this may take some time");
+            fputs(s, file);
             fputs("\n", file);
         }
         fclose(file);

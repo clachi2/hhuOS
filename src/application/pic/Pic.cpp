@@ -571,6 +571,7 @@ void Pic::checkKeyboardInput() {
                             swapTool(data, Tool::NEW_EMPTY);
                             data->flags->guiLayerChanged();
                             data->flags->overlayChanged();
+                            data->flags->guiLayerChanged();
                             data->currentGuiLayerBottom->appear();
                             data->currentGuiLayer->appear();
                             break;
@@ -578,16 +579,19 @@ void Pic::checkKeyboardInput() {
                             data->layers->addPicture(data->currentInput->operator const char *(), 0, 0);
                             if (!data->settings->textCaptureAfterUse) data->captureInput = false, data->textButton->render(), data->flags->guiButtonChanged();
                             data->flags->layerOrderChanged();
+                            data->flags->guiLayerChanged();
                             break;
                         case Util::Io::Key::P: // pen
                             changeGuiLayerTo(data, "tools");
                             data->penSize = 10;
                             swapTool(data, Tool::PEN);
+                            data->flags->guiLayerChanged();
                             break;
                         case Util::Io::Key::E: // eraser
                             changeGuiLayerTo(data, "tools");
                             data->penSize = 10;
                             swapTool(data, Tool::ERASER);
+                            data->flags->guiLayerChanged();
                             break;
                         case Util::Io::Key::N: // shapes
                             changeGuiLayerTo(data, "tools");
@@ -596,10 +600,12 @@ void Pic::checkKeyboardInput() {
                             data->shapeW = 0;
                             data->shapeH = 0;
                             swapTool(data, Tool::SHAPE);
+                            data->flags->guiLayerChanged();
                             break;
                         case Util::Io::Key::C: // color
                             changeGuiLayerTo(data, "tools");
                             swapTool(data, Tool::COLOR);
+                            data->flags->guiLayerChanged();
                             break;
                         case Util::Io::Key::M: // move
                             changeGuiLayerTo(data, "tools");
@@ -611,16 +617,19 @@ void Pic::checkKeyboardInput() {
                                 data->moveY = 0;
                             }
                             swapTool(data, Tool::MOVE);
+                            data->flags->guiLayerChanged();
                             break;
                         case Util::Io::Key::R: // rotate
                             changeGuiLayerTo(data, "tools");
                             data->rotateDeg = 0;
                             swapTool(data, Tool::ROTATE);
+                            data->flags->guiLayerChanged();
                             break;
                         case Util::Io::Key::S: // scale
                             changeGuiLayerTo(data, "tools");
                             data->scale = 1.0;
                             swapTool(data, Tool::SCALE);
+                            data->flags->guiLayerChanged();
                             break;
                         case Util::Io::Key::O: // crop
                             changeGuiLayerTo(data, "tools");
@@ -629,6 +638,7 @@ void Pic::checkKeyboardInput() {
                             data->cropTop = 0;
                             data->cropBottom = 0;
                             swapTool(data, Tool::CROP);
+                            data->flags->guiLayerChanged();
                             break;
                         case Util::Io::Key::T: // replace color
                             changeGuiLayerTo(data, "tools");
@@ -636,6 +646,7 @@ void Pic::checkKeyboardInput() {
                             data->replaceColorY = 0;
                             data->replaceColorTolerance = 0.0;
                             swapTool(data, Tool::REPLACE_COLOR);
+                            data->flags->guiLayerChanged();
                             break;
                         case Util::Io::Key::X:
                             this->data->layers->history->printCommands();
